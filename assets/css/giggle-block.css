@@ -1,0 +1,538 @@
+/**
+ * Giggle WP — Frontend block styles.
+ * BEM: .giggle-events / .giggle-event
+ */
+
+/* -------------------------------------------------------------------------
+   Section wrapper
+   ------------------------------------------------------------------------- */
+
+.giggle-events {
+	container-type: inline-size;
+	position: relative;
+	margin-block: 2rem;
+	overflow-x: clip; /* clip horizontal bleed without clipping vertical shadows */
+}
+
+.giggle-events__title {
+	margin-block-end: 1.25rem;
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #111827;
+}
+
+/* -------------------------------------------------------------------------
+   Carousel track
+   ------------------------------------------------------------------------- */
+
+.giggle-events__list {
+	-ms-overflow-style: none;
+	-webkit-overflow-scrolling: touch;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform: translateZ( 0 );
+	transform: translateZ( 0 );
+	cursor: grab;
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: stretch;
+	gap: 1.25rem;
+	list-style: none;
+	margin-block: -24px;         /* negative margin + padding = shadow overflow room */
+	padding-block: 24px;
+	padding-inline: 1.5rem;
+	margin-inline: -1.5rem;
+	overflow-x: auto;
+	overflow-y: visible;
+	overscroll-behavior-x: contain;
+	position: relative;
+	scroll-behavior: smooth;
+	scroll-padding-inline-start: 1.5rem;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: none;
+}
+
+.giggle-events__list:active {
+	cursor: grabbing;
+}
+
+.giggle-events__list::-webkit-scrollbar {
+	display: none;
+}
+
+/* -------------------------------------------------------------------------
+   Carousel item — responsive card counts
+   Mobile:  ~2 cards + peek
+   Tablet:  ~3 cards + peek   (container ≥ 36rem)
+   Desktop: ~4 cards + peek   (container ≥ 64rem)
+   ------------------------------------------------------------------------- */
+
+.giggle-events__item {
+	flex: 0 0 calc( (100cqi - 1.25rem) / 2.3 );
+	scroll-snap-align: start;
+	display: flex;
+}
+
+@container (min-width: 36rem) {
+	.giggle-events__item {
+		flex: 0 0 calc( (100cqi - 2 * 1.25rem) / 3.3 );
+	}
+}
+
+@container (min-width: 64rem) {
+	.giggle-events__item {
+		flex: 0 0 calc( (100cqi - 3 * 1.25rem) / 4.3 );
+	}
+}
+
+/* -------------------------------------------------------------------------
+   Single event card  (element is <a> when a URL exists)
+   ------------------------------------------------------------------------- */
+
+.giggle-event {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	background: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: var( --giggle-card-radius, 0.875rem );
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba( 0, 0, 0, .06 );
+	transition: box-shadow 0.25s ease, transform 0.25s ease;
+	/* Reset link styles when rendered as <a> */
+	color: #111827;
+	text-decoration: none;
+}
+
+.giggle-event:hover,
+.giggle-event:focus-visible {
+	box-shadow: 0 8px 28px rgba( 0, 0, 0, .12 );
+	transform: translateY( -3px ) scale( 1.015 );
+	outline: none;
+}
+
+/* Image */
+
+.giggle-event__image-wrap {
+	display: block;
+	aspect-ratio: 3 / 2;
+	overflow: hidden;
+}
+
+.giggle-event__image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.4s ease;
+}
+
+.giggle-event:hover .giggle-event__image {
+	transform: scale( 1.06 );
+}
+
+/* Body */
+
+.giggle-event__body {
+	padding: 0.875rem 1rem;
+}
+
+/* Title — 2-line clamp keeps all cards the same height */
+
+.giggle-event__title {
+	margin: 0;
+	font-size: 0.9rem;
+	font-weight: 600;
+	line-height: 1.35;
+	color: #111827;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* Date line */
+
+.giggle-event__date {
+	margin: 0.35rem 0 0;
+	font-size: 0.75rem;
+	color: #6b7280;
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.giggle-event__date-more {
+	font-size: 0.75rem;
+	color: #9ca3af;
+	letter-spacing: 0.02em;
+}
+
+/* -------------------------------------------------------------------------
+   Carousel arrow controls
+   ------------------------------------------------------------------------- */
+
+.giggle-events__arrows {
+	display: flex;
+	gap: 0.75rem;
+	margin-top: 1.25rem;
+}
+
+.giggle-events__arrow {
+	-webkit-tap-highlight-color: transparent;
+	align-items: center;
+	backdrop-filter: blur( 8px );
+	-webkit-backdrop-filter: blur( 8px );
+	background: hsla( 0, 0%, 100%, .88 );
+	border: none;
+	border-radius: 50%;
+	box-shadow: 0 1px 4px rgba( 0, 0, 0, .12 ), 0 0 0 .5px rgba( 0, 0, 0, .07 );
+	color: #111827;
+	cursor: pointer;
+	display: flex;
+	flex-shrink: 0;
+	height: 40px;
+	justify-content: center;
+	padding: 0;
+	width: 40px;
+	transition:
+		background-color 0.15s ease,
+		box-shadow 0.15s ease,
+		opacity 0.22s ease;
+}
+
+.giggle-events__arrow svg {
+	display: block;
+	width: 20px;
+	height: 10px;
+}
+
+.giggle-events__arrow.is-disabled {
+	opacity: 0.2;
+	cursor: default;
+	pointer-events: none;
+}
+
+.giggle-events__arrow:not( .is-disabled ):hover {
+	background: #ffffff;
+	box-shadow: 0 3px 12px rgba( 0, 0, 0, .16 ), 0 0 0 .5px rgba( 0, 0, 0, .07 );
+}
+
+/* -------------------------------------------------------------------------
+   Grid layout
+   ------------------------------------------------------------------------- */
+
+.giggle-events--grid {
+	overflow: visible;
+}
+
+.giggle-events--grid .giggle-events__list {
+	--giggle-grid-columns: 2;
+	display: grid;
+	grid-template-columns: repeat( var( --giggle-grid-columns ), 1fr );
+	gap: 20px;
+	width: 100%;
+	margin-bottom: 40px;
+	/* reset all carousel-specific properties */
+	flex-wrap: unset;
+	overflow: visible;
+	cursor: default;
+	margin-inline: 0;
+	padding-inline: 0;
+	margin-block: 0;
+	padding-block: 0;
+	overscroll-behavior-x: auto;
+	scroll-snap-type: none;
+	-webkit-backface-visibility: visible;
+	backface-visibility: visible;
+	-webkit-transform: none;
+	transform: none;
+	scrollbar-width: auto;
+}
+
+@media ( min-width: 768px ) {
+	.giggle-events--grid .giggle-events__list {
+		--giggle-grid-columns: 3;
+		gap: 30px;
+	}
+}
+
+@media ( min-width: 1200px ) {
+	.giggle-events--grid .giggle-events__list {
+		--giggle-grid-columns: 4;
+		gap: 40px;
+	}
+}
+
+/* Grid items: full height so cards stretch uniformly */
+
+.giggle-events--grid .giggle-events__item {
+	height: 100%;
+	width: 100%;
+}
+
+.giggle-events--grid .giggle-events__item .giggle-event {
+	height: 100%;
+}
+
+/* -------------------------------------------------------------------------
+   Detail modal
+   ------------------------------------------------------------------------- */
+
+.giggle-modal {
+	padding: 0;
+	border: none;
+	border-radius: 1rem;
+	width: min( 680px, calc( 100vw - 2rem ) );
+	max-height: min( 90dvh, 840px );
+	background: #fff;
+	box-shadow: 0 24px 64px rgba( 0, 0, 0, .2 );
+	overflow: hidden;
+}
+
+.giggle-modal::backdrop {
+	background: rgba( 0, 0, 0, .55 );
+	backdrop-filter: blur( 6px );
+	-webkit-backdrop-filter: blur( 6px );
+}
+
+.giggle-modal[open] {
+	animation: giggle-modal-enter .28s cubic-bezier( .34, 1.3, .64, 1 ) both;
+}
+
+@keyframes giggle-modal-enter {
+	from { opacity: 0; scale: .96; }
+	to   { opacity: 1; scale: 1; }
+}
+
+/* Inner layout */
+
+.giggle-modal__inner {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	max-height: min( 90dvh, 840px );
+}
+
+.giggle-modal__scroll {
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	flex: 1;
+}
+
+/* Image */
+
+.giggle-modal__image-wrap {
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.giggle-modal__image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* Body */
+
+.giggle-modal__body {
+	padding: 1.5rem 1.5rem 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.giggle-modal__title {
+	margin: 0;
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: #111827;
+	line-height: 1.3;
+}
+
+.giggle-modal__dates {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+}
+
+.giggle-modal__date {
+	font-size: 0.78rem;
+	color: #374151;
+	background: #f3f4f6;
+	border-radius: 0.3rem;
+	padding: 0.2rem 0.5rem;
+}
+
+.giggle-modal__meta {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 0.5rem 1.25rem;
+	margin: 0;
+	padding: 0.875rem 0;
+	border-top: 1px solid #f3f4f6;
+	border-bottom: 1px solid #f3f4f6;
+}
+
+.giggle-modal__meta-label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: #9ca3af;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	white-space: nowrap;
+	margin: 0;
+	padding: 0.1rem 0;
+	align-self: start;
+}
+
+.giggle-modal__meta-value {
+	font-size: 0.85rem;
+	color: #374151;
+	margin: 0;
+	padding: 0.1rem 0;
+}
+
+.giggle-modal__description {
+	font-size: 0.9rem;
+	color: #374151;
+	line-height: 1.65;
+}
+
+.giggle-modal__description p   { margin: 0 0 0.75rem; }
+.giggle-modal__description p:last-child { margin-bottom: 0; }
+.giggle-modal__description ul,
+.giggle-modal__description ol  { padding-inline-start: 1.25rem; margin: 0 0 0.75rem; }
+
+/* Close button */
+
+.giggle-modal__close {
+	position: absolute;
+	top: 0.75rem;
+	right: 0.75rem;
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	backdrop-filter: blur( 8px );
+	-webkit-backdrop-filter: blur( 8px );
+	background: hsla( 0, 0%, 100%, .88 );
+	border: none;
+	border-radius: 50%;
+	box-shadow: 0 1px 4px rgba( 0, 0, 0, .12 ), 0 0 0 .5px rgba( 0, 0, 0, .07 );
+	color: #111827;
+	cursor: pointer;
+	transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.giggle-modal__close:hover {
+	background: #ffffff;
+	box-shadow: 0 3px 12px rgba( 0, 0, 0, .16 ), 0 0 0 .5px rgba( 0, 0, 0, .07 );
+}
+
+/* Footer + CTA */
+
+.giggle-modal__footer {
+	padding: 1rem 1.5rem 1.5rem;
+	border-top: 1px solid #f3f4f6;
+	background: #fff;
+	flex-shrink: 0;
+}
+
+.giggle-modal__cta {
+	display: block;
+	text-align: center;
+	padding: 0.875rem 1.5rem;
+	background: var( --giggle-cta-bg, var( --wp--preset--color--primary, #928a73 ) );
+	color: #fff;
+	font-weight: 600;
+	font-size: 0.9rem;
+	border-radius: 0.5rem;
+	text-decoration: none;
+	transition: background 0.15s ease;
+}
+
+.giggle-modal__cta:hover {
+	background: var( --giggle-cta-hover, var( --wp--preset--color--primary-hover, #726a53 ) );
+	color: #fff;
+}
+
+/* -------------------------------------------------------------------------
+   State variants
+   ------------------------------------------------------------------------- */
+
+.giggle-events--placeholder,
+.giggle-events--empty,
+.giggle-events--error {
+	padding: 1.5rem;
+	border: 2px dashed #e5e7eb;
+	border-radius: var( --giggle-card-radius, 0.75rem );
+	color: #6b7280;
+	font-size: 0.9rem;
+}
+
+.giggle-events--error {
+	border-color: #fca5a5;
+	background: #fef2f2;
+	color: #991b1b;
+}
+
+/* -------------------------------------------------------------------------
+   Editor preview styles
+   ------------------------------------------------------------------------- */
+
+.giggle-events--editor {
+	border: 2px dashed #d1d5db;
+	border-radius: 0.75rem;
+	padding: 1rem 1.25rem;
+	background: #f9fafb;
+}
+
+.giggle-events__editor-label {
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: #9ca3af;
+	display: block;
+	margin-block-end: 0.5rem;
+}
+
+.giggle-events__editor-info {
+	margin: 0.25rem 0;
+	font-size: 0.875rem;
+	color: #374151;
+}
+
+.giggle-events__editor-note {
+	color: #9ca3af;
+	font-style: italic;
+}
+
+.giggle-events__editor-preview code {
+	background: #e5e7eb;
+	border-radius: 0.25rem;
+	padding: 0.1em 0.35em;
+	font-size: 0.85em;
+}
+
+/* -------------------------------------------------------------------------
+   Dark mode
+   ------------------------------------------------------------------------- */
+
+@media ( prefers-color-scheme: dark ) {
+	/* Card colors intentionally kept white/dark-gray in dark mode */
+
+	.giggle-events__list {
+		scrollbar-color: #4b5563 transparent;
+	}
+
+	.giggle-events--placeholder,
+	.giggle-events--empty {
+		border-color: #374151;
+		color: #9ca3af;
+	}
+}
