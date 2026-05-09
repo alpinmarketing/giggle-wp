@@ -66,14 +66,14 @@ class Giggle_Block {
 		] );
 
 		register_block_type( 'giggle-wp/events', [
-			'api_version'     => 2,
+			'api_version'     => 3,
 			'title'           => __( 'Giggle Events', 'giggle-wp' ),
 			'category'        => 'embed',
 			'icon'            => 'calendar-alt',
 			'description'     => __( 'Display Giggle.tips experiences and events on your page.', 'giggle-wp' ),
 			'editor_script'   => 'giggle-wp-block-editor',
 			'style'           => 'giggle-wp-block',
-			'script'          => 'giggle-wp-modal',
+			'view_script'     => 'giggle-wp-modal',
 			'render_callback' => [ self::class, 'render' ],
 			'attributes'      => [
 				'streamIds'   => [

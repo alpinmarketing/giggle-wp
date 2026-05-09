@@ -3,7 +3,7 @@
  * Plugin Name:       Giggle WP
  * Plugin URI:        https://giggle.tips
  * Description:       Display Giggle.tips experiences and events on your WordPress site using a Gutenberg block. Supports schema.org JSON-LD semantic annotations.
- * Version:           26.4.29.3
+ * Version:           26.5.9.2
  * Requires at least: 6.9.4
  * Requires PHP:      8.3
  * Author:            Giggle.tips
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GIGGLE_WP_VERSION', '26.4.29.3' );
+define( 'GIGGLE_WP_VERSION', '26.5.9.2' );
 define( 'GIGGLE_WP_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GIGGLE_WP_URL', plugin_dir_url( __FILE__ ) );
 
