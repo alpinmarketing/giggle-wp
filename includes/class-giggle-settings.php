@@ -190,6 +190,10 @@ class Giggle_Settings {
 	public static function flush_caches(): void {
 		global $wpdb;
 
+		// Transient keys are dynamically hashed (e.g. giggle_streams_<md5>), so
+		// individual delete_transient() calls aren't possible; a direct, uncached
+		// bulk delete is required to clear them all on credential change.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM {$wpdb->options}
