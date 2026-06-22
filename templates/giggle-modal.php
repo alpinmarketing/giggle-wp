@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<img class="giggle-modal__image" id="giggle-modal-image" src="" alt="" />
 			</div>
 			<div class="giggle-modal__body">
-				<h2 class="giggle-modal__title" id="giggle-modal-title"></h2>
+				<h2 class="giggle-modal__title" id="giggle-modal-title"><?php echo esc_html( function_exists( 'pll__' ) ? pll__( 'Event details' ) : __( 'Event details', 'giggle-wp' ) ); ?></h2>
 				<div class="giggle-modal__dates" id="giggle-modal-dates"></div>
 				<dl class="giggle-modal__meta" id="giggle-modal-meta"></dl>
 				<div class="giggle-modal__description" id="giggle-modal-description"></div>
