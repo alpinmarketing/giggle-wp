@@ -3,15 +3,15 @@
  * Plugin Name:       Giggle WP
  * Plugin URI:        https://www.alpinmarketing.at/wordpress-agentur-hotel-webdesign-tirol/
  * Description:       Display Giggle.tips experiences and events on your WordPress site using a Gutenberg block. Supports schema.org JSON-LD semantic annotations.
- * Version:           26.6.24.1
- * Requires at least: 7
- * Requires PHP:      8.4
- * Author:            ALPINMARKETING
+ * Version:           26.6.24.2
+ * Author:            ALPINMARKETING®
  * Author URI:        https://www.alpinmarketing.at
- * License:           GPL-2.0+
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       giggle-wp
  * Domain Path:       /languages
+ * Requires at least: 7.0
+ * Requires PHP:      8.4
+ * License:           GPL-2.0+
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 declare( strict_types=1 );
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GIGGLE_WP_VERSION', '26.6.22.1' );
+define( 'GIGGLE_WP_VERSION', '26.6.24.2' );
 define( 'GIGGLE_WP_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GIGGLE_WP_URL', plugin_dir_url( __FILE__ ) );
 
