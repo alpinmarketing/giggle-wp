@@ -36,21 +36,23 @@ class Giggle_Block {
 			true
 		);
 
-		// Frontend styles.
-		wp_register_style(
-			'giggle-wp-block',
-			GIGGLE_WP_URL . 'assets/css/giggle-block.css',
-			[],
-			GIGGLE_WP_VERSION
-		);
+		// Frontend styles — printed inline to avoid an extra request for this small stylesheet.
+		wp_register_style( 'giggle-wp-block', false, [], GIGGLE_WP_VERSION );
+		$block_css = file_get_contents( GIGGLE_WP_DIR . 'assets/css/giggle-block.css' );
+		if ( false !== $block_css ) {
+			wp_add_inline_style( 'giggle-wp-block', $block_css );
+		}
 
-		// Frontend modal script.
+		// Frontend modal script — deferred so it no longer blocks HTML parsing.
 		wp_register_script(
 			'giggle-wp-modal',
 			GIGGLE_WP_URL . 'assets/js/giggle-modal.js',
 			[],
 			GIGGLE_WP_VERSION,
-			true
+			[
+				'in_footer' => true,
+				'strategy'  => 'defer',
+			]
 		);
 		wp_localize_script( 'giggle-wp-modal', 'GiggleI18n', [
 			'location'             => __( 'Location', 'giggle-wp' ),
