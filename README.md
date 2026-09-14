@@ -17,11 +17,12 @@ A WordPress plugin that embeds [Giggle.tips](https://giggle.tips) experiences an
 - **Filterable** — experience list filterable by stream, language, date range, and bookability
 - **Theme-friendly** — CSS custom properties (`--giggle-cta-bg`, `--giggle-card-bg`, etc.) for easy styling
 - **No build step** — vanilla JS with `wp.*` globals, works without Node.js tooling
+- **Polylang-aware** — registers UI strings (CTA label, ARIA labels) for translation when Polylang is active
 
 ## Requirements
 
-- WordPress 6.9.4+
-- PHP 8.3+
+- WordPress 7.1+
+- PHP 8.4+
 - A [Giggle.tips](https://giggle.tips) account with an API key
 
 ## Installation
@@ -55,7 +56,8 @@ git clone https://github.com/alpinmarketing/giggle-wp.git wp-content/plugins/gig
 
 | Filter | Default | Description |
 |---|---|---|
-| `giggle_wp_cache_ttl` | `3600` | Cache lifetime in seconds |
+| `giggle_wp_cache_ttl` | `3600` (1 hour) | Fresh cache lifetime in seconds; once expired, a stale copy is served instantly while a background refresh runs |
+| `giggle_wp_stale_ttl` | `86400` (24 hours) | How long a stale copy remains servable before a cold, blocking fetch is required |
 
 ## Development
 
@@ -81,6 +83,13 @@ To build a distribution ZIP:
 ```bash
 bash build-zip.sh
 # Output: dist/giggle-wp.zip
+```
+
+Static analysis (PHPStan level 8, with WordPress stubs):
+
+```bash
+composer install
+vendor/bin/phpstan analyse
 ```
 
 ## Disclaimer

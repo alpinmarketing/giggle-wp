@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Giggle WP\n"
-"POT-Creation-Date: 2026-04-19 16:29+0200\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/giggle-wp\n"
+"POT-Creation-Date: 2026-09-14T06:57:00+00:00\n"
 "PO-Revision-Date: 2026-04-19 16:34+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -20,8 +21,224 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
+#. Plugin Name of the plugin
+#: giggle-wp.php includes/Settings.php:33
+msgid "Giggle WP"
+msgstr "Giggle WP"
+
+#. Plugin URI of the plugin
+#: giggle-wp.php
+msgid "https://www.alpinmarketing.at/wordpress-agentur-hotel-webdesign-tirol/"
+msgstr ""
+
+#. Description of the plugin
+#: giggle-wp.php
+msgid ""
+"Display Giggle.tips experiences and events on your WordPress site using a "
+"Gutenberg block. Supports schema.org JSON-LD semantic annotations."
+msgstr ""
+"Zeigen Sie Giggle.tips-Erfahrungen und -Veranstaltungen auf Ihrer WordPress-"
+"Seite mit einem Gutenberg-Block an. Unterstützt schema.org JSON-LD "
+"semantische Annotationen."
+
+#. Author of the plugin
+#: giggle-wp.php
+msgid "ALPINMARKETING®"
+msgstr ""
+
+#. Author URI of the plugin
+#: giggle-wp.php
+msgid "https://www.alpinmarketing.at"
+msgstr ""
+
+#: includes/Api.php:59
+msgid "No stream IDs provided."
+msgstr "Keine Stream-IDs werden bereitgestellt."
+
+#: includes/Api.php:85
+msgid "No hotel code configured."
+msgstr "Kein Hotelcode konfiguriert."
+
+#: includes/Api.php:130
+msgid "Giggle data is warming up in the background."
+msgstr "Giggle-Daten werden im Hintergrund geladen."
+
+#: includes/Api.php:197
+msgid "Giggle API key is not configured."
+msgstr "Der Giggle-API-Schlüssel ist nicht konfiguriert."
+
+#: includes/Api.php:218
+msgid "Giggle API: authentication failed. Check your API key."
+msgstr ""
+"Giggle API: Authentifizierung fehlgeschlagen. Überprüfe deinen API-Schlüssel."
+
+#. translators: 1: HTTP status code
+#: includes/Api.php:226
+#, php-format
+msgid "Giggle API returned HTTP %d."
+msgstr "Die Giggle API hat HTTP %d zurückgegeben."
+
+#: includes/Api.php:235
+msgid "Giggle API returned invalid JSON."
+msgstr "Die Giggle-API hat ein ungültiges JSON zurückgegeben."
+
+#: includes/Block.php:62
+msgid "Location"
+msgstr "Ort"
+
+#: includes/Block.php:63
+msgid "Meeting point"
+msgstr "Treffpunkt"
+
+#: includes/Block.php:64
+msgid "Registration deadline"
+msgstr "Anmeldeschluss"
+
+#: includes/Block.php:65
+msgid "Group size"
+msgstr "Gruppengröße"
+
+#: includes/Block.php:66
+msgid "Duration"
+msgstr "Dauer"
+
+#: includes/Block.php:67
+msgid "persons"
+msgstr "Personen"
+
+#: includes/Block.php:68
+msgid "up to"
+msgstr "bis"
+
+#: includes/Block.php:69
+msgid "from"
+msgstr "ab"
+
+#: includes/Block.php:70
+msgid "h"
+msgstr "h"
+
+#: includes/Block.php:71
+msgid "min"
+msgstr "min"
+
+#: includes/Block.php:76 assets/js/giggle-block-editor.js:183
+msgid "Giggle Events"
+msgstr "Giggle-Events"
+
+#: includes/Block.php:79
+msgid "Display Giggle.tips experiences and events on your page."
+msgstr ""
+"Zeigen Sie die Erfahrungen und Veranstaltungen von Giggle.tips auf Ihrer "
+"Seite an."
+
+#: includes/Block.php:141
+msgid "Giggle Events: enter one or more stream IDs in the block settings."
+msgstr ""
+"Giggle Events: Gib eine oder mehrere Stream-IDs in die Blockeinstellungen "
+"ein."
+
+#: includes/Block.php:159
+msgid "Giggle Events: data is loading in the background, refresh shortly."
+msgstr ""
+"Giggle Events: Daten werden im Hintergrund geladen, bitte in Kürze "
+"aktualisieren."
+
+#. translators: error message
+#: includes/Block.php:162
+#, php-format
+msgid "Giggle API error: %s"
+msgstr "Giggle API-Fehler: %s"
+
+#: includes/Block.php:180
+msgid "No experiences found."
+msgstr "Keine Erfahrungen gefunden."
+
+#: includes/Settings.php:32
+msgid "Giggle WP Settings"
+msgstr "Giggle WP-Einstellungen"
+
+#: includes/Settings.php:55
+msgid "API Credentials"
+msgstr "API Zugangsdaten"
+
+#: includes/Settings.php:62
+msgid "API Key"
+msgstr "API-Schlüssel"
+
+#: includes/Settings.php:70
+msgid "Hotel Code"
+msgstr "Hotel Code"
+
+#. translators: link to Giggle API docs
+#: includes/Settings.php:81
+#, php-format
+msgid ""
+"Enter your Giggle credentials. You can find your API key and hotel code in "
+"the <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Giggle CMS</"
+"a>."
+msgstr ""
+"Gib deine Giggle-Zugangsdaten ein. Deinen API-Schlüssel und Hotelcode "
+"findest du im <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">"
+"Giggle CMS</a>."
+
+#: includes/Settings.php:100
+msgid ""
+"Your Giggle API key. This key is sent as the api-key request header and is "
+"never exposed in the frontend HTML."
+msgstr ""
+"Dein Giggle-API-Schlüssel. Dieser Schlüssel wird als API-Schlüssel-"
+"Anfragekopf gesendet und wird im Frontend-HTML nie angezeigt."
+
+#: includes/Settings.php:118
+msgid ""
+"The unique code from your Giggle WebApp URL — for example, \"giggletips\" "
+"from giggle.tips/giggletips."
+msgstr ""
+"Der einzigartige Code aus deiner Giggle WebApp-URL – zum Beispiel "
+"\"giggletips\" von giggle.tips/giggletips."
+
+#: includes/Settings.php:145
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: includes/Settings.php:172
+msgid "Giggle API connection failed:"
+msgstr "Verbindung zur Giggle API fehlgeschlagen:"
+
+#: includes/Settings.php:179
+msgid "Connected to Giggle API."
+msgstr "Verbunden mit der Giggle-API."
+
+#. translators: %d number of streams found
+#: includes/Settings.php:182
+#, php-format
+msgid "%d stream found."
+msgid_plural "%d streams found."
+msgstr[0] "%d Stream gefunden."
+msgstr[1] "%d Streams gefunden."
+
+#: templates/events-list.php:188
+msgid "Previous slide"
+msgstr "Vorheriger Slide"
+
+#: templates/events-list.php:193
+msgid "Next slide"
+msgstr "Nächster Slide"
+
+#: templates/giggle-modal.php:9
+msgid "Close"
+msgstr "Schließen"
+
+#: templates/giggle-modal.php:20
+msgid "Event details"
+msgstr "Veranstaltungsdetails"
+
+#: templates/giggle-modal.php:29
+msgid "Learn more & book"
+msgstr "Details & Reservierung"
+
 #: assets/js/giggle-block-editor.js:25
-#, fuzzy
 msgid "— All languages —"
 msgstr "— Alle Sprachen —"
 
@@ -37,7 +254,7 @@ msgstr "Stream-ID(s)"
 msgid ""
 "Comma-separated stream UUIDs from the Giggle CMS. At least one is required."
 msgstr ""
-"Kommuna-getrennte Stream-UUIDs vom Giggle-CMS. Mindestens eine ist "
+"Kommagetrennte Stream-UUIDs vom Giggle-CMS. Mindestens eine ist "
 "erforderlich."
 
 #: assets/js/giggle-block-editor.js:90
@@ -120,10 +337,6 @@ msgstr "Sprache: "
 msgid "Live event data is fetched and rendered on the frontend."
 msgstr "Live-Event-Daten werden im Frontend abgerufen und gerendert."
 
-#: assets/js/giggle-block-editor.js:183 includes/class-giggle-block.php:70
-msgid "Giggle Events"
-msgstr "Giggle-Events"
-
 #: assets/js/giggle-block-editor.js:184
 msgid ""
 "Open the block settings panel and enter at least one Stream ID to display "
@@ -131,195 +344,3 @@ msgid ""
 msgstr ""
 "Öffne das Blockeinstellungsfeld und gib mindestens eine Stream-ID ein, um "
 "Giggle-Erfahrungen anzuzeigen."
-
-#: includes/class-giggle-api.php:61
-msgid "No stream IDs provided."
-msgstr "Keine Stream-IDs werden bereitgestellt."
-
-#: includes/class-giggle-api.php:87
-msgid "No hotel code configured."
-msgstr "Kein Hotelcode konfiguriert."
-
-#: includes/class-giggle-api.php:189
-msgid "Giggle API key is not configured."
-msgstr "Der Giggle-API-Schlüssel ist nicht konfiguriert."
-
-#: includes/class-giggle-api.php:210
-msgid "Giggle API: authentication failed. Check your API key."
-msgstr ""
-"Giggle API: Authentifizierung fehlgeschlagen. Überprüfe deinen API-Schlüssel."
-
-#. translators: 1: HTTP status code
-#: includes/class-giggle-api.php:218
-#, php-format
-msgid "Giggle API returned HTTP %d."
-msgstr "Die Giggle API hat HTTP %d zurückgegeben."
-
-#: includes/class-giggle-api.php:227
-msgid "Giggle API returned invalid JSON."
-msgstr "Die Giggle-API hat ein ungültiges JSON zurückgegeben."
-
-#: includes/class-giggle-block.php:56
-msgid "Location"
-msgstr "Ort"
-
-#: includes/class-giggle-block.php:57
-msgid "Meeting point"
-msgstr "Treffpunkt"
-
-#: includes/class-giggle-block.php:58
-msgid "Registration deadline"
-msgstr "Anmeldeschluss"
-
-#: includes/class-giggle-block.php:59
-msgid "Group size"
-msgstr "Gruppengröße"
-
-#: includes/class-giggle-block.php:60
-msgid "Duration"
-msgstr "Dauer"
-
-#: includes/class-giggle-block.php:61
-msgid "persons"
-msgstr "Personen"
-
-#: includes/class-giggle-block.php:62
-msgid "up to"
-msgstr "bis"
-
-#: includes/class-giggle-block.php:63
-msgid "from"
-msgstr "ab"
-
-#: includes/class-giggle-block.php:64
-msgid "h"
-msgstr "h"
-
-#: includes/class-giggle-block.php:65
-msgid "min"
-msgstr "min"
-
-#: includes/class-giggle-block.php:73
-msgid "Display Giggle.tips experiences and events on your page."
-msgstr ""
-"Zeigen Sie die Erfahrungen und Veranstaltungen von Giggle.tips auf Ihrer "
-"Seite an."
-
-#: includes/class-giggle-block.php:135
-msgid "Giggle Events: enter one or more stream IDs in the block settings."
-msgstr ""
-"Giggle Events: Gib eine oder mehrere Stream-IDs in die Blockeinstellungen "
-"ein."
-
-#. translators: error message
-#: includes/class-giggle-block.php:156
-#, php-format
-msgid "Giggle API error: %s"
-msgstr "Giggle API-Fehler: %s"
-
-#: includes/class-giggle-block.php:170
-msgid "No experiences found."
-msgstr "Keine Erfahrungen gefunden."
-
-#: includes/class-giggle-settings.php:30
-msgid "Giggle WP Settings"
-msgstr "Giggle WP-Einstellungen"
-
-#. Plugin Name of the plugin/theme
-#: includes/class-giggle-settings.php:31
-msgid "Giggle WP"
-msgstr "Giggle WP"
-
-#: includes/class-giggle-settings.php:53
-msgid "API Credentials"
-msgstr "API Zugangsdaten"
-
-#: includes/class-giggle-settings.php:60
-msgid "API Key"
-msgstr "API-Schlüssel"
-
-#: includes/class-giggle-settings.php:68
-msgid "Hotel Code"
-msgstr "Hotel Code"
-
-#. translators: link to Giggle API docs
-#: includes/class-giggle-settings.php:79
-#, php-format
-msgid ""
-"Enter your Giggle credentials. You can find your API key and hotel code in "
-"the <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Giggle CMS</"
-"a>."
-msgstr ""
-"Gib deine Giggle-Berechtigung ein. Ihren API-Schlüssel und Hotelcode finden "
-"Sie im <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Giggle "
-"CMS.</a>"
-
-#: includes/class-giggle-settings.php:98
-msgid ""
-"Your Giggle API key. This key is sent as the api-key request header and is "
-"never exposed in the frontend HTML."
-msgstr ""
-"Dein Giggle-API-Schlüssel. Dieser Schlüssel wird als API-Schlüssel-"
-"Anfragekopf gesendet und wird im Frontend-HTML nie angezeigt."
-
-#: includes/class-giggle-settings.php:116
-msgid ""
-"The unique code from your Giggle WebApp URL — for example, \"giggletips\" "
-"from giggle.tips/giggletips."
-msgstr ""
-"Der einzigartige Code aus deiner Giggle WebApp-URL – zum Beispiel "
-"\"giggletips\" von giggle.tips/giggletips."
-
-#: includes/class-giggle-settings.php:143
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
-
-#: includes/class-giggle-settings.php:170
-msgid "Giggle API connection failed:"
-msgstr "Verbindung zur Giggle API fehlgeschlagen:"
-
-#: includes/class-giggle-settings.php:177
-msgid "Connected to Giggle API."
-msgstr "Verbunden mit der Giggle-API."
-
-#. translators: %d number of streams found
-#: includes/class-giggle-settings.php:180
-#, php-format
-msgid "%d stream found."
-msgid_plural "%d streams found."
-msgstr[0] "%d Stream gefunden."
-msgstr[1] "%d Bäche gefunden."
-
-#: templates/events-list.php:243
-msgid "Previous slide"
-msgstr "Vorheriger Slide"
-
-#: templates/events-list.php:248
-msgid "Next slide"
-msgstr "Nächster Slide"
-
-#: templates/giggle-modal.php:9
-msgid "Close"
-msgstr "Schließen"
-
-#: templates/giggle-modal.php:29
-msgid "Learn more & book"
-msgstr "Details & Reservierung"
-
-#. Plugin URI of the plugin/theme
-#. Author URI of the plugin/theme
-msgid "https://giggle.tips"
-msgstr "https://giggle.tips"
-
-#. Description of the plugin/theme
-msgid ""
-"Display Giggle.tips experiences and events on your WordPress site using a "
-"Gutenberg block. Supports schema.org JSON-LD semantic annotations."
-msgstr ""
-"Zeigen Sie Giggle.tips-Erfahrungen und -Veranstaltungen auf Ihrer WordPress-"
-"Seite mit einem Gutenberg-Block an. Unterstützt schema.org JSON-LD "
-"semantische Annotationen."
-
-#. Author of the plugin/theme
-msgid "Giggle.tips"
-msgstr "Giggle.tips"
