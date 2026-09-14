@@ -63,11 +63,13 @@ No build step required. Edit PHP, JS, and CSS files directly.
 
 ```
 giggle-wp/
-├── giggle-wp.php          # Plugin bootstrap, version constant
+├── giggle-wp.php          # Plugin bootstrap, PSR-4 autoloader (AM\GiggleWp\)
 ├── includes/
-│   ├── class-giggle-api.php       # API client + transient cache
-│   ├── class-giggle-block.php     # Block registration + server render
-│   └── class-giggle-settings.php  # Settings page
+│   ├── Api.php             # API client + transient cache
+│   ├── Block.php           # Block registration + server render
+│   ├── Settings.php        # Settings page
+│   ├── Dto/                # Readonly value objects for API data
+│   └── Support/            # WordPress-independent helper classes
 ├── assets/
 │   └── js/giggle-block-editor.js  # Gutenberg editor sidebar (vanilla JS)
 ├── templates/             # Front-end render templates

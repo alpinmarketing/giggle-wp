@@ -8,11 +8,13 @@
 
 declare( strict_types=1 );
 
+namespace AM\GiggleWp;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Giggle_Settings {
+final class Settings {
 
 	private const PAGE_SLUG    = 'giggle-wp';
 	private const OPTION_GROUP = 'giggle_wp_options';
@@ -154,7 +156,7 @@ class Giggle_Settings {
 		$cached = get_transient( 'giggle_conn' );
 
 		if ( false === $cached ) {
-			$api    = Giggle_API::from_options();
+			$api    = Api::from_options();
 			$result = $api->fetch_streams();
 
 			$cached = is_wp_error( $result )

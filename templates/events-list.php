@@ -2,62 +2,21 @@
 /**
  * Frontend template: Giggle Events list.
  *
- * Variables available (injected by Giggle_Block::render()):
+ * Variables available (injected by Block::render()):
  *
- * @var array  $items        Array of experience objects from the Giggle API.
- * @var string $block_title  Optional section heading from the block attribute.
- * @var string $language     ISO language code selected in the block (may be empty).
- * @var string $layout       'carousel' or 'grid'.
+ * @var ExperienceDto[] $experiences  Experience DTOs, already resolved to $language.
+ * @var string          $block_title  Optional section heading from the block attribute.
+ * @var string          $layout       'carousel' or 'grid'.
  */
 
 declare( strict_types=1 );
 
+use AM\GiggleWp\Dto\ExperienceDto;
+use AM\GiggleWp\Support\DateFormatter;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-// -------------------------------------------------------------------------
-// Helper: pick the best translation for a given language preference.
-// -------------------------------------------------------------------------
-
-/**
- * @param array  $translations  Array of { language, title, description, ... }.
- * @param string $preferred     ISO code (e.g. 'en'). Falls back to first item.
- * @return array
- */
-if ( ! function_exists( 'giggle_pick_translation' ) ) :
-function giggle_pick_translation( array $translations, string $preferred ): array {
-	if ( empty( $translations ) ) {
-		return [];
-	}
-
-	if ( $preferred ) {
-		foreach ( $translations as $t ) {
-			if ( isset( $t['language'] ) && $t['language'] === $preferred ) {
-				return $t;
-			}
-		}
-	}
-
-	// Fall back to the first available translation.
-	return $translations[0];
-}
-endif;
-
-// -------------------------------------------------------------------------
-// Helper: format a UTC ISO 8601 date string for display.
-// -------------------------------------------------------------------------
-
-if ( ! function_exists( 'giggle_format_date' ) ) :
-function giggle_format_date( string $iso ): string {
-	try {
-		$dt = new DateTimeImmutable( $iso, new DateTimeZone( 'UTC' ) );
-		return $dt->format( 'd.m.Y H:i' );
-	} catch ( Exception ) {
-		return esc_html( $iso );
-	}
-}
-endif;
 
 // -------------------------------------------------------------------------
 // Collect schema.org JSON-LD objects for output in <head> (or inline).
@@ -65,38 +24,31 @@ endif;
 
 $jsonld_items = [];
 
-foreach ( $items as $exp ) {
-	$trans = giggle_pick_translation( $exp['translations'] ?? [], $language );
-	$title = $trans['title'] ?? '';
-	$desc  = $trans['description'] ?? '';
-	$loc   = $trans['location'] ?? '';
-
-	$events = $exp['events'] ?? [];
-
-	if ( ! empty( $events ) ) {
+foreach ( $experiences as $experience ) {
+	if ( [] !== $experience->events ) {
 		// Output one schema.org Event per scheduled occurrence.
-		foreach ( $events as $event ) {
+		foreach ( $experience->events as $event ) {
 			$ld = [
 				'@context'    => 'https://schema.org',
 				'@type'       => 'Event',
-				'name'        => $title,
-				'description' => wp_strip_all_tags( $desc ),
-				'url'         => $exp['url'] ?? '',
+				'name'        => $experience->title,
+				'description' => wp_strip_all_tags( $experience->description ),
+				'url'         => $experience->url,
 			];
 
-			if ( ! empty( $event['startDate'] ) ) {
-				$ld['startDate'] = $event['startDate'];
+			if ( '' !== $event->startDate ) {
+				$ld['startDate'] = $event->startDate;
 			}
-			if ( ! empty( $event['endDate'] ) ) {
-				$ld['endDate'] = $event['endDate'];
+			if ( '' !== $event->endDate ) {
+				$ld['endDate'] = $event->endDate;
 			}
-			if ( ! empty( $exp['imageUrl'] ) ) {
-				$ld['image'] = $exp['imageUrl'];
+			if ( '' !== $experience->imageUrl ) {
+				$ld['image'] = $experience->imageUrl;
 			}
-			if ( $loc ) {
+			if ( '' !== $experience->location ) {
 				$ld['location'] = [
 					'@type' => 'Place',
-					'name'  => $loc,
+					'name'  => $experience->location,
 				];
 			}
 			$ld['organizer'] = [
@@ -107,29 +59,29 @@ foreach ( $items as $exp ) {
 
 			$jsonld_items[] = $ld;
 		}
-	} elseif ( $title ) {
+	} else {
 		// No scheduled events — output as schema.org/Product (service/experience).
 		$ld = [
 			'@context'    => 'https://schema.org',
 			'@type'       => 'Product',
-			'name'        => $title,
-			'description' => wp_strip_all_tags( $desc ),
-			'url'         => $exp['url'] ?? '',
+			'name'        => $experience->title,
+			'description' => wp_strip_all_tags( $experience->description ),
+			'url'         => $experience->url,
 			'offers'      => [
 				'@type'         => 'Offer',
 				'price'         => 0,
 				'priceCurrency' => 'EUR',
 			],
 		];
-		if ( ! empty( $exp['imageUrl'] ) ) {
-			$ld['image'] = $exp['imageUrl'];
+		if ( '' !== $experience->imageUrl ) {
+			$ld['image'] = $experience->imageUrl;
 		}
 		$jsonld_items[] = $ld;
 	}
 }
 ?>
 
-<?php if ( ! empty( $jsonld_items ) ) : ?>
+<?php if ( [] !== $jsonld_items ) : ?>
 <script type="application/ld+json">
 <?php echo wp_json_encode( $jsonld_items, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT ); ?>
 </script>
@@ -143,20 +95,13 @@ foreach ( $items as $exp ) {
 
 	<ul class="giggle-events__list">
 
-		<?php foreach ( $items as $exp ) :
-			$trans     = giggle_pick_translation( $exp['translations'] ?? [], $language );
-			$title     = $trans['title'] ?? '';
-			$url       = esc_url( $exp['url'] ?? '' );
-			$image_url = esc_url( $exp['imageUrl'] ?? '' );
-			$events    = $exp['events'] ?? [];
-
-			if ( ! $title ) {
-				continue;
-			}
+		<?php foreach ( $experiences as $experience ) :
+			$url       = esc_url( $experience->url );
+			$image_url = esc_url( $experience->imageUrl );
 
 			$item_data = wp_json_encode( [
-				'title'                => $title,
-				'description'          => wp_kses( $trans['description'] ?? '', [
+				'title'                => $experience->title,
+				'description'          => wp_kses( $experience->description, [
 					'p'      => [],
 					'br'     => [],
 					'em'     => [],
@@ -166,21 +111,21 @@ foreach ( $items as $exp ) {
 					'li'     => [],
 					'a'      => [ 'href' => [], 'target' => [], 'rel' => [] ],
 				] ),
-				'imageUrl'             => $exp['imageUrl'] ?? '',
-				'url'                  => $exp['url'] ?? '',
+				'imageUrl'             => $experience->imageUrl,
+				'url'                  => $experience->url,
 				// Meta fields
-				'location'             => $exp['location'] ?? '',
-				'meetingPoint'         => $trans['location'] ?? $trans['meetingPoint'] ?? $exp['meetingPoint'] ?? '',
-				'registrationDeadline' => $exp['registrationDeadline'] ?? '',
-				'minParticipants'      => $exp['minParticipants'] ?? null,
-				'maxParticipants'      => $exp['maxParticipants'] ?? null,
-				'duration'             => $exp['duration'] ?? null,
-				'durationUnit'         => $exp['durationUnit'] ?? 'min',
+				'location'             => $experience->location,
+				'meetingPoint'         => $experience->meetingPoint,
+				'registrationDeadline' => $experience->registrationDeadline,
+				'minParticipants'      => $experience->minParticipants,
+				'maxParticipants'      => $experience->maxParticipants,
+				'duration'             => $experience->duration,
+				'durationUnit'         => $experience->durationUnit,
 				// Dates
-				'events'               => array_map( static fn( $e ) => [
-					'startDate' => $e['startDate'] ?? '',
-					'endDate'   => $e['endDate'] ?? '',
-				], $events ),
+				'events'               => array_map(
+					static fn( $event ) => $event->toArray(),
+					$experience->events
+				),
 			] );
 
 			if ( false === $item_data ) {
@@ -193,12 +138,12 @@ foreach ( $items as $exp ) {
 					' href="%s" target="_blank" rel="noopener noreferrer" data-giggle-item="%s" aria-label="%s"',
 					$url,
 					esc_attr( $item_data ),
-					esc_attr( $title )
+					esc_attr( $experience->title )
 				)
 				: sprintf(
 					' data-giggle-item="%s" aria-label="%s"',
 					esc_attr( $item_data ),
-					esc_attr( $title )
+					esc_attr( $experience->title )
 				);
 		?>
 		<li class="giggle-events__item">
@@ -216,16 +161,16 @@ foreach ( $items as $exp ) {
 				<?php endif; ?>
 
 				<div class="giggle-event__body">
-					<h3 class="giggle-event__title"><?php echo esc_html( $title ); ?></h3>
+					<h3 class="giggle-event__title"><?php echo esc_html( $experience->title ); ?></h3>
 
 					<?php
-					$first_event = $events[0] ?? null;
-					$start       = $first_event['startDate'] ?? '';
+					$first_event = $experience->events[0] ?? null;
+					$start       = $first_event?->startDate ?? '';
 					if ( $start ) :
 					?>
 					<p class="giggle-event__date">
-						<time datetime="<?php echo esc_attr( $start ); ?>"><?php echo esc_html( giggle_format_date( $start ) ); ?></time>
-						<?php if ( count( $events ) > 1 ) : ?>
+						<time datetime="<?php echo esc_attr( $start ); ?>"><?php echo esc_html( DateFormatter::format( $start ) ); ?></time>
+						<?php if ( count( $experience->events ) > 1 ) : ?>
 						<span class="giggle-event__date-more">&hellip;</span>
 						<?php endif; ?>
 					</p>

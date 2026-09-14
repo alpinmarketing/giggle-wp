@@ -8,25 +8,23 @@
 
 declare( strict_types=1 );
 
+namespace AM\GiggleWp;
+
+use WP_Error;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Giggle_API {
+final readonly class Api {
 
 	private const BASE_URL = 'https://api.giggle.tips';
 	private const VERSION  = 'v1';
 
-	/** @var string */
-	private string $api_key;
-
-	/** @var string */
-	private string $hotel_code;
-
-	public function __construct( string $api_key, string $hotel_code ) {
-		$this->api_key    = $api_key;
-		$this->hotel_code = $hotel_code;
-	}
+	public function __construct(
+		private string $api_key,
+		private string $hotel_code,
+	) {}
 
 	/**
 	 * Factory: build from stored plugin options.
@@ -89,7 +87,7 @@ class Giggle_API {
 
 		$params = [
 			'hotelCode'         => $this->hotel_code,
-			'onlyPublicStreams'  => $only_public ? 'true' : 'false',
+			'onlyPublicStreams' => $only_public ? 'true' : 'false',
 		];
 
 		$cache_key = 'giggle_streams_' . md5( (string) wp_json_encode( $params ) );
@@ -109,17 +107,27 @@ class Giggle_API {
 	 * - When the fresh marker is gone but stale data still exists, the stale
 	 *   data is returned immediately and a background WP-Cron job refreshes
 	 *   the cache — zero TTFB penalty for the visitor.
-	 * - Only a true cold start (both transients missing) triggers a blocking
-	 *   API call.
+	 * - On a true cold start (both transients missing) during a frontend
+	 *   request, a background refresh is scheduled and a "warming up"
+	 *   WP_Error is returned instead of blocking the render with a live API
+	 *   call. Only in wp-admin (e.g. the settings page's connection check,
+	 *   or a block-editor preview) is a blocking call still made, since that
+	 *   is a deliberate, user-initiated check rather than a visitor page load.
 	 */
 	private function cached_get( string $cache_key, string $path, array $params ): array|WP_Error {
 		$stale = get_transient( $cache_key );
 
-		if ( false !== $stale ) {
+		if ( is_array( $stale ) ) {
 			if ( false === get_transient( $cache_key . '_fresh' ) ) {
 				$this->schedule_background_refresh( $cache_key, $path, $params );
 			}
 			return $stale;
+		}
+
+		if ( ! is_admin() ) {
+			$this->schedule_background_refresh( $cache_key, $path, $params );
+
+			return new WP_Error( 'giggle_cache_warming', __( 'Giggle data is warming up in the background.', 'giggle-wp' ) );
 		}
 
 		$result = $this->remote_get( $path, $params );
@@ -223,7 +231,7 @@ class Giggle_API {
 
 		$data = json_decode( $body, true );
 
-		if ( JSON_ERROR_NONE !== json_last_error() ) {
+		if ( JSON_ERROR_NONE !== json_last_error() || ! is_array( $data ) ) {
 			return new WP_Error( 'giggle_json_error', __( 'Giggle API returned invalid JSON.', 'giggle-wp' ) );
 		}
 

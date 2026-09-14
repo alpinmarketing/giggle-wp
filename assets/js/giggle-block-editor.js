@@ -40,7 +40,7 @@
 
 	blocks.registerBlockType( 'giggle-wp/events', {
 
-		/* Attribute schema — must mirror class-giggle-block.php so the editor
+		/* Attribute schema — must mirror includes/Block.php so the editor
 		   initialises defaults without waiting for the REST /block-types response. */
 		attributes: {
 			streamIds:    { type: 'string',  default: '' },

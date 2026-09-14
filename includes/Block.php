@@ -8,11 +8,15 @@
 
 declare( strict_types=1 );
 
+namespace AM\GiggleWp;
+
+use AM\GiggleWp\Dto\ExperienceDto;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Giggle_Block {
+final class Block {
 
 	private static bool $modal_rendered = false;
 
@@ -78,11 +82,11 @@ class Giggle_Block {
 			'view_script'     => 'giggle-wp-modal',
 			'render_callback' => [ self::class, 'render' ],
 			'attributes'      => [
-				'streamIds'   => [
+				'streamIds'    => [
 					'type'    => 'string',
 					'default' => '',
 				],
-				'language'    => [
+				'language'     => [
 					'type'    => 'string',
 					'default' => '',
 				],
@@ -90,19 +94,19 @@ class Giggle_Block {
 					'type'    => 'boolean',
 					'default' => true,
 				],
-				'dateRange'   => [
+				'dateRange'    => [
 					'type'    => 'string',
 					'default' => '',
 				],
-				'pageSize'    => [
+				'pageSize'     => [
 					'type'    => 'integer',
 					'default' => 10,
 				],
-				'title'       => [
+				'title'        => [
 					'type'    => 'string',
 					'default' => '',
 				],
-				'layout'      => [
+				'layout'       => [
 					'type'    => 'string',
 					'default' => 'carousel',
 				],
@@ -117,22 +121,22 @@ class Giggle_Block {
 	 * @return string HTML output.
 	 */
 	public static function render( array $attrs ): string {
-		$stream_ids  = sanitize_text_field( $attrs['streamIds'] ?? '' );
+		$stream_ids        = sanitize_text_field( $attrs['streamIds'] ?? '' );
 		$allowed_languages = [ '', 'de', 'en', 'es', 'fr', 'it', 'nl', 'nb', 'sk', 'sl', 'sv', 'el', 'ja', 'zh' ];
 		$language          = in_array( $attrs['language'] ?? '', $allowed_languages, true )
 			? (string) ( $attrs['language'] ?? '' )
 			: '';
-		$only_bkble  = (bool) ( $attrs['onlyBookable'] ?? true );
-		$date_range  = sanitize_text_field( $attrs['dateRange'] ?? '' );
-		$page_size   = max( 1, min( 50, (int) ( $attrs['pageSize'] ?? 10 ) ) );
-		$block_title = sanitize_text_field( $attrs['title'] ?? '' );
-		$layout      = in_array( $attrs['layout'] ?? '', [ 'carousel', 'grid' ], true )
+		$only_bookable = (bool) ( $attrs['onlyBookable'] ?? true );
+		$date_range    = sanitize_text_field( $attrs['dateRange'] ?? '' );
+		$page_size     = max( 1, min( 50, (int) ( $attrs['pageSize'] ?? 10 ) ) );
+		$block_title   = sanitize_text_field( $attrs['title'] ?? '' );
+		$layout        = in_array( $attrs['layout'] ?? '', [ 'carousel', 'grid' ], true )
 			? $attrs['layout']
 			: 'carousel';
 
 		if ( '' === $stream_ids ) {
 			// Show a placeholder only in the editor, nothing on the frontend.
-			if ( is_admin() || defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
 				return '<div class="giggle-events giggle-events--placeholder">'
 					. '<p>' . esc_html__( 'Giggle Events: enter one or more stream IDs in the block settings.', 'giggle-wp' ) . '</p>'
 					. '</div>';
@@ -141,33 +145,37 @@ class Giggle_Block {
 			return '';
 		}
 
-		$api    = Giggle_API::from_options();
+		$api    = Api::from_options();
 		$result = $api->fetch_experiences( $stream_ids, [
 			'language'      => $language,
-			'only_bookable' => $only_bkble,
+			'only_bookable' => $only_bookable,
 			'date_range'    => $date_range,
 			'page_size'     => $page_size,
 		] );
 
 		if ( is_wp_error( $result ) ) {
 			if ( current_user_can( 'manage_options' ) ) {
-				return '<div class="giggle-events giggle-events--error"><p>'
-					. esc_html(
-						sprintf(
-							/* translators: error message */
-							__( 'Giggle API error: %s', 'giggle-wp' ),
-							$result->get_error_message()
-						)
-					)
-					. '</p></div>';
+				$message = 'giggle_cache_warming' === $result->get_error_code()
+					? __( 'Giggle Events: data is loading in the background, refresh shortly.', 'giggle-wp' )
+					: sprintf(
+						/* translators: error message */
+						__( 'Giggle API error: %s', 'giggle-wp' ),
+						$result->get_error_message()
+					);
+
+				return '<div class="giggle-events giggle-events--error"><p>' . esc_html( $message ) . '</p></div>';
 			}
 
 			return '';
 		}
 
-		$items = $result['items'] ?? [];
+		$raw_items   = is_array( $result['items'] ?? null ) ? array_filter( $result['items'], 'is_array' ) : [];
+		$experiences = array_values( array_filter( array_map(
+			static fn( array $item ): ?ExperienceDto => ExperienceDto::fromApiItem( $item, $language ),
+			$raw_items
+		) ) );
 
-		if ( empty( $items ) ) {
+		if ( [] === $experiences ) {
 			return '<div class="giggle-events giggle-events--empty"><p>'
 				. esc_html__( 'No experiences found.', 'giggle-wp' )
 				. '</p></div>';
