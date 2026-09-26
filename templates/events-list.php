@@ -25,16 +25,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 $jsonld_items = [];
 
 foreach ( $experiences as $experience ) {
-	// Google requires `location` (with an address) and `startDate` for a valid
-	// Event. Occurrences missing either would invalidate the whole page's
-	// markup, so they are skipped; if none remain, fall back to Product.
-	$event_items = [];
+	if ( [] !== $experience->events ) {
+		// Google requires `location` (with an address) and `startDate` for a
+		// valid Event. The public Giggle API only delivers the free-text meeting
+		// point (`googleAddress` is preferred should the API ever expose it).
+		// Occurrences that cannot be described validly get no markup at all
+		// rather than invalid Event markup or a misleading Product.
+		$address = '' !== $experience->location ? $experience->location : $experience->meetingPoint;
 
-	if ( '' !== $experience->location ) {
+		if ( '' === $address ) {
+			continue;
+		}
+
 		$place = [
 			'@type'   => 'Place',
-			'name'    => '' !== $experience->meetingPoint ? $experience->meetingPoint : $experience->location,
-			'address' => $experience->location,
+			'name'    => '' !== $experience->meetingPoint ? $experience->meetingPoint : $address,
+			'address' => $address,
 		];
 
 		foreach ( $experience->events as $event ) {
@@ -66,14 +72,10 @@ foreach ( $experiences as $experience ) {
 				'url'   => 'https://giggle.tips',
 			];
 
-			$event_items[] = $ld;
+			$jsonld_items[] = $ld;
 		}
-	}
-
-	if ( [] !== $event_items ) {
-		array_push( $jsonld_items, ...$event_items );
 	} else {
-		// No valid scheduled events — output as schema.org/Product (service/experience).
+		// No scheduled events — output as schema.org/Product (service/experience).
 		$ld = [
 			'@context'    => 'https://schema.org',
 			'@type'       => 'Product',
