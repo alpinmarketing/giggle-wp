@@ -65,8 +65,10 @@ final readonly class ExperienceDto {
 			description: (string) ( $translation['description'] ?? '' ),
 			imageUrl: (string) ( $raw['imageUrl'] ?? '' ),
 			url: (string) ( $raw['url'] ?? '' ),
-			location: (string) ( $raw['location'] ?? '' ),
-			meetingPoint: (string) ( $translation['location'] ?? $translation['meetingPoint'] ?? $raw['meetingPoint'] ?? '' ),
+			// The Giggle API delivers the resolved place as `googleAddress`
+			// (e.g. "Mals, Autonome Provinz Bozen - Südtirol, Italien").
+			location: trim( (string) ( $raw['googleAddress'] ?? $raw['location'] ?? '' ) ),
+			meetingPoint: trim( (string) ( $translation['location'] ?? $translation['meetingPoint'] ?? $raw['meetingPoint'] ?? '' ) ),
 			registrationDeadline: (string) ( $raw['registrationDeadline'] ?? '' ),
 			minParticipants: isset( $raw['minParticipants'] ) ? (int) $raw['minParticipants'] : null,
 			maxParticipants: isset( $raw['maxParticipants'] ) ? (int) $raw['maxParticipants'] : null,

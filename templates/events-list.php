@@ -25,31 +25,40 @@ if ( ! defined( 'ABSPATH' ) ) {
 $jsonld_items = [];
 
 foreach ( $experiences as $experience ) {
-	if ( [] !== $experience->events ) {
-		// Output one schema.org Event per scheduled occurrence.
+	// Google requires `location` (with an address) and `startDate` for a valid
+	// Event. Occurrences missing either would invalidate the whole page's
+	// markup, so they are skipped; if none remain, fall back to Product.
+	$event_items = [];
+
+	if ( '' !== $experience->location ) {
+		$place = [
+			'@type'   => 'Place',
+			'name'    => '' !== $experience->meetingPoint ? $experience->meetingPoint : $experience->location,
+			'address' => $experience->location,
+		];
+
 		foreach ( $experience->events as $event ) {
+			if ( '' === $event->startDate ) {
+				continue;
+			}
+
 			$ld = [
-				'@context'    => 'https://schema.org',
-				'@type'       => 'Event',
-				'name'        => $experience->title,
-				'description' => wp_strip_all_tags( $experience->description ),
-				'url'         => $experience->url,
+				'@context'            => 'https://schema.org',
+				'@type'               => 'Event',
+				'name'                => $experience->title,
+				'description'         => wp_strip_all_tags( $experience->description ),
+				'url'                 => $experience->url,
+				'startDate'           => $event->startDate,
+				'eventStatus'         => 'https://schema.org/EventScheduled',
+				'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+				'location'            => $place,
 			];
 
-			if ( '' !== $event->startDate ) {
-				$ld['startDate'] = $event->startDate;
-			}
 			if ( '' !== $event->endDate ) {
 				$ld['endDate'] = $event->endDate;
 			}
 			if ( '' !== $experience->imageUrl ) {
 				$ld['image'] = $experience->imageUrl;
-			}
-			if ( '' !== $experience->location ) {
-				$ld['location'] = [
-					'@type' => 'Place',
-					'name'  => $experience->location,
-				];
 			}
 			$ld['organizer'] = [
 				'@type' => 'Organization',
@@ -57,10 +66,14 @@ foreach ( $experiences as $experience ) {
 				'url'   => 'https://giggle.tips',
 			];
 
-			$jsonld_items[] = $ld;
+			$event_items[] = $ld;
 		}
+	}
+
+	if ( [] !== $event_items ) {
+		array_push( $jsonld_items, ...$event_items );
 	} else {
-		// No scheduled events — output as schema.org/Product (service/experience).
+		// No valid scheduled events — output as schema.org/Product (service/experience).
 		$ld = [
 			'@context'    => 'https://schema.org',
 			'@type'       => 'Product',
