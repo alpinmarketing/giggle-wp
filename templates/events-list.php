@@ -98,7 +98,11 @@ foreach ( $experiences as $experience ) {
 
 <?php if ( [] !== $jsonld_items ) : ?>
 <script type="application/ld+json">
-<?php echo wp_json_encode( $jsonld_items, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT ); ?>
+<?php
+// JSON_HEX_TAG encodes < and > as \u003C / \u003E, so API-supplied strings
+// (e.g. a title containing "</script>") cannot break out of the script block.
+echo wp_json_encode( $jsonld_items, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+?>
 </script>
 <?php endif; ?>
 
